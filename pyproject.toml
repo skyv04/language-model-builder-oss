@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "language-model-builder-oss"
+version = "0.1.0"
+description = "Unofficial open-source edition of Language Model Builder for Linux, WSL and macOS: build a small language model from scratch, step by step"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    # PyTorch's last release for Intel Macs is 2.2, which was built against NumPy 1.x.
+    "torch>=2.4,<3; platform_system != 'Darwin' or platform_machine != 'x86_64'",
+    "torch>=2.2,<2.3; platform_system == 'Darwin' and platform_machine == 'x86_64'",
+    "numpy>=1.26,<3; platform_system != 'Darwin' or platform_machine != 'x86_64'",
+    "numpy>=1.26,<2; platform_system == 'Darwin' and platform_machine == 'x86_64'",
+    "safetensors>=0.4,<1",
+    "tokenizers>=0.19,<1",
+    "pyarrow>=14",
+    # The app window on macOS (the Mac's own WebKit). Linux uses the system's WebKitGTK instead.
+    "pywebview>=5; platform_system == 'Darwin'",
+]
+
+[project.urls]
+Homepage = "https://github.com/skyv04/language-model-builder-oss"
+
+[project.optional-dependencies]
+# Training on Linux GPUs without CUDA (Adreno, Mali, Intel, AMD, ...) through Vulkan.
+gpu = ["tinygrad==0.14.0", "wgpu==0.33.0"]
+
+[project.scripts]
+language-model-builder = "model_builder.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["model_builder*"]
+
+[tool.setuptools.package-data]
+model_builder = ["ui/*.html", "ui/**/*"]

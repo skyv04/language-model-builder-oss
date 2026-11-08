@@ -1,0 +1,17 @@
+#!/bin/bash
+# Launcher for Language Model Builder, open-source edition (see ../install.sh).
+set -euo pipefail
+script=$0
+while [ -L "$script" ]; do  # follow links such as ~/.local/bin/language-model-builder (older macOS has no readlink -f)
+    target=$(readlink "$script")
+    case "$target" in
+        /*) script=$target ;;
+        *) script=$(dirname "$script")/$target ;;
+    esac
+done
+root=$(cd "$(dirname "$script")/.." && pwd -P)
+if [ ! -x "$root/.venv/bin/python" ]; then
+    echo "Language Model Builder isn't installed yet. Run: bash $root/install.sh" >&2
+    exit 1
+fi
+exec "$root/.venv/bin/python" -m model_builder "$@"
